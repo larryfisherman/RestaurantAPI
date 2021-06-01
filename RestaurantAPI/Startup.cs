@@ -35,7 +35,10 @@ namespace RestaurantAPI
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddScoped<IRestaurantService, RestaurantService>();
             services.AddScoped<ErrorHandlingMiddleware>();
+            services.AddScoped<RequestTimeMiddleware>();
             services.AddSwaggerGen();
+            services.AddScoped<IDishService, DishService>();
+            services.AddScoped<IAccountService, AccountService>();
              
         }
 
@@ -52,10 +55,14 @@ namespace RestaurantAPI
             }
 
             app.UseMiddleware<ErrorHandlingMiddleware>();
-
+            app.UseMiddleware<RequestTimeMiddleware>();
             app.UseHttpsRedirection();
 
+            app.UseSwagger();
 
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Restaurant API");
+                });
 
             app.UseRouting();
 
